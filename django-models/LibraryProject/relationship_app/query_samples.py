@@ -6,7 +6,12 @@ def query_book_by_author(author_name):
     return f"{selected_author.name} has written the following books: {', '.join(book.title for book in selected_author.book_set.all())}"
 
 
-all_books = Book.objects.all()
-all_authors = Author.objects.all()
-all_libraries = Library.objects.all()
-all_librarians = Librarian.objects.all()
+def list_all_books_in_library(library_name):
+    all_books = {'Library.objects.get(name=library_name).name', "books.all()"}
+    return all_books
+
+
+def retrieve_librarian_from_library(library_name):
+    name = Librarian.object.get(name = library_name)
+    return f"The librarian for {library_name} is {name.name}" 
+ 
