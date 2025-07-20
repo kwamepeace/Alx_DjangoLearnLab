@@ -2,9 +2,9 @@ from django.shortcuts import render
 from .models import Author, Book, Library, Librarian
 
 
-def all_books(request):
+def list_books(request):
     books = Book.objects.all()
-    return render(request, 'relationship_app/all_books.html', {'books': books})
+    return render(request, 'relationship_app/list_books.html', {'books': books})
 
 
 class LibraryDetailView:
