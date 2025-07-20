@@ -1,10 +1,8 @@
-from django.shortcuts import render
-from django.views.generic.detail import DetailView
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Library, Book, Librarian
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
-
-
+from .forms import CustomUserCreationForm
 
 def list_books(request):
     books = Book.objects.all()
@@ -33,3 +31,18 @@ class LibraryDetailView:
             'books': books,
             'librarian': librarian
         })
+    
+
+def register_view(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            messages.success(request, f'Account created successfully for {user.username}. You can now log in.')
+            # Use the full URL name with namespace for redirect
+            return redirect('relationship_app:login')
+        else:
+            messages.error(request, 'Registration failed. Please correct the errors below.')
+    else:
+        form = CustomUserCreationForm()
+    return render(request, 'relationship_app/register.html', {'form': form})
