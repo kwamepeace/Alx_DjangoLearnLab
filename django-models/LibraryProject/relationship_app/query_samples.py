@@ -1,9 +1,10 @@
 from relationship_app.models import Author, Book, Library, Librarian  
 
 
-def query_book_by_author(author_name):
-    selected_author = Author.objects.get(name=author_name)
-    return f"{selected_author.name} has written the following books: {', '.join(book.title for book in selected_author.book_set.all())}"
+def query_book_by_author(author):
+    author = Author.objects.get(name=author)
+    author_books = Book.objects.filter(author=author)
+    return f"{author.name} has written the following books: {', '.join(book.title for book in author_books)}"
 
 
 def list_all_books_in_library(library_name):
