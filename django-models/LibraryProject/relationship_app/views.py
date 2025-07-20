@@ -33,7 +33,7 @@ class LibraryDetailView:
         })
     
 
-def register_view(request):
+def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
