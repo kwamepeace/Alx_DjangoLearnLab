@@ -46,3 +46,37 @@ def register(request):
     else:
         form = CustomUserCreationForm()
     return render(request, 'relationship_app/register.html', {'form': form})
+
+
+
+def admin_view(request):
+    if request.user.is_authenticated and request.user.is_staff:
+        libraries = Library.objects.all()
+        return render(request, 'relationship_app/admin_view.html', {'libraries': libraries})
+    else:
+        messages.error(request, 'You do not have permission to view this page.')
+        return redirect('relationship_app:list_books')
+    
+
+def librarian_view(request):
+    if request.user.is_authenticated and hasattr(request.user, 'librarian'):
+        librarian = request.user.librarian
+        library = librarian.library
+        books = library.books.all()
+        return render(request, 'relationship_app/librarian_view.html', {
+            'librarian': librarian,
+            'library': library,
+            'books': books
+        })
+    else:
+        messages.error(request, 'You do not have permission to view this page.')
+        return redirect('relationship_app:list_books')
+    
+
+def member_view(request):
+    if request.user.is_authenticated:
+        user_books = request.user.books.all()
+        return render(request, 'relationship_app/member_view.html', {'user_books': user_books})
+    else:
+        messages.error(request, 'You need to log in to view your books.')
+        return redirect('relationship_app:login')
