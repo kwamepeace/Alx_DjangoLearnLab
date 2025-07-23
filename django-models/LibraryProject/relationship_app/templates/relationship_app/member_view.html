@@ -1,11 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
-</body>
-</html>
+{% extends 'relationship_app/base.html' %}
+
+{% block title %}Member Dashboard{% endblock %}
+
+{% block content %}
+    <h1>Welcome, {{ user.username }}!</h1>
+    <div class="message">
+        <p>This is the **{{ role }}** dashboard. You have access to member-specific functionalities.</p>
+        <p>Here, you can browse books, view your borrowing history, and manage your profile.</p>
+        <ul>
+            <li><a href="{% url 'relationship_app:book_list' %}">Browse Available Books</a></li>
+            <li>View your current borrowings.</li>
+            <li>Update your personal information.</li>
+        </ul>
+    </div>
+{% endblock %}

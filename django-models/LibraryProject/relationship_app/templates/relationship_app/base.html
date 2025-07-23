@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Library Project{% endblock %}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
+        .container { max-width: 800px; margin: 0 auto; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        nav { margin-bottom: 20px; }
+        nav a { margin-right: 15px; text-decoration: none; color: #007bff; }
+        nav a:hover { text-decoration: underline; }
+        h1 { color: #0056b3; }
+        .message { background-color: #e9ecef; border-left: 5px solid #007bff; padding: 10px; margin-bottom: 15px; }
+        .button { display: inline-block; padding: 10px 15px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; }
+        .button:hover { background-color: #0056b3; }
+        .logout-link { float: right; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav>
+            {% if user.is_authenticated %}
+                Hello, {{ user.username }}! (Role: {{ user.profile.get_role_display }})
+                <a href="{% url 'relationship_app:logout' %}" class="logout-link button">Logout</a>
+                <hr>
+                <p>
+                    <a href="{% url 'relationship_app:admin_dashboard' %}">Admin Dashboard</a> |
+                    <a href="{% url 'relationship_app:librarian_dashboard' %}">Librarian Dashboard</a> |
+                    <a href="{% url 'relationship_app:member_dashboard' %}">Member Dashboard</a> |
+                    <a href="{% url 'relationship_app:book_list' %}">Books</a>
+                </p>
+            {% else %}
+                <a href="{% url 'relationship_app:login' %}">Login</a> |
+                <a href="{% url 'relationship_app:register' %}">Register</a>
+            {% endif %}
+        </nav>
+
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+</html>

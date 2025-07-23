@@ -1,9 +1,8 @@
 from django.shortcuts import render, redirect
-from django.views.generic import DetailView
 from .models import Library, Book, Librarian
 from django.contrib import messages
 from .forms import CustomUserCreationForm
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import user_passes_test, login_required
 
 def list_books(request):
     books = Book.objects.all()
@@ -49,37 +48,34 @@ def register(request):
     return render(request, 'relationship_app/register.html', {'form': form})
 
 
-@user_passes_test(lambda u: u.is_authenticated and u.is_staff, login_url='relationship_app:login')
+def is_admin(user):
+    """Checks if the user has the 'Admin' role."""
+    return user.is_authenticated and hasattr(user, 'profile') and user.profile.role == 'AD'
+
+def is_librarian(user):
+    """Checks if the user has the 'Librarian' role."""
+    return user.is_authenticated and hasattr(user, 'profile') and user.profile.role == 'LI'
+
+def is_member(user):
+    """Checks if the user has the 'Member' role."""
+    return user.is_authenticated and hasattr(user, 'profile') and user.profile.role == 'ME'
+
+# --- Role-Based Views ---
+
+@login_required # Ensures user is logged in
+@user_passes_test(is_admin, login_url='/login/', redirect_field_name=None)
 def admin_view(request):
-    if request.user.is_authenticated and request.user.is_staff:
-        libraries = Library.objects.all()
-        return render(request, 'relationship_app/admin_view.html', {'libraries': libraries})
-    else:
-        messages.error(request, 'You do not have permission to view this page.')
-        return redirect('relationship_app:list_books')
-    
-@user_passes_test (lambda u: hasattr(u, 'librarian'), login_url='relationship_app:login')
+    """View accessible only to Admin users."""
+    return render(request, 'relationship_app/admin_view.html', {'role': 'Admin'})
+
+@login_required # Ensures user is logged in
+@user_passes_test(is_librarian, login_url='/login/', redirect_field_name=None)
 def librarian_view(request):
-    if request.user.is_authenticated and hasattr(request.user, 'librarian'):
-        librarian = request.user.librarian
-        library = librarian.library
-        books = library.books.all()
-        return render(request, 'relationship_app/librarian_view.html', {
-            'librarian': librarian,
-            'library': library,
-            'books': books
-        })
-    else:
-        messages.error(request, 'You do not have permission to view this page.')
-        return redirect('relationship_app:list_books')
+    """View accessible only to Librarian users."""
+    return render(request, 'relationship_app/librarian_view.html', {'role': 'Librarian'})
 
-
-
-@user_passes_test (lambda u: u.is_authenticated and not hasattr(u, 'librarian'), login_url='relationship_app:login')
+@login_required # Ensures user is logged in
+@user_passes_test(is_member, login_url='/login/', redirect_field_name=None)
 def member_view(request):
-    if request.user.is_authenticated:
-        user_books = request.user.books.all()
-        return render(request, 'relationship_app/member_view.html', {'user_books': user_books})
-    else:
-        messages.error(request, 'You need to log in to view your books.')
-        return redirect('relationship_app:login')
+    """View accessible only to Member users."""
+    return render(request, 'relationship_app/member_view.html', {'role': 'Member'})

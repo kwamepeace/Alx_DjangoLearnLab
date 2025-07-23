@@ -1,0 +1,16 @@
+{% extends 'relationship_app/base.html' %}
+
+{% block title %}Librarian Dashboard{% endblock %}
+
+{% block content %}
+    <h1>Welcome, {{ user.username }}!</h1>
+    <div class="message">
+        <p>This is the **{{ role }}** dashboard. You have access to librarian-specific functionalities.</p>
+        <p>Here, you can manage books, borrowers, and library inventory.</p>
+        <ul>
+            <li>Add/Edit/Delete Books.</li>
+            <li>Manage Borrowing and Returns.</li>
+            <li>View Member activity.</li>
+        </ul>
+    </div>
+{% endblock %}
