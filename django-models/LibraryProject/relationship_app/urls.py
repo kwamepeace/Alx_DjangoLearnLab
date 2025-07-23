@@ -5,9 +5,10 @@ from . import views
 app_name = 'relationship_app' 
 
 urlpatterns = [
+    # Using function-based view for book list and class-based view for library detail for demonstration purposes.
     path('books/', views.list_books, name='book_list'),
-    path('libraries/<int:pk>/', views.LibraryDetailView.get_library(), name='library_detail'),
-
+    path('libraries/<int:pk>/', views.LibraryDetailView.as_view(), name='library_detail'), 
+    
     # --- Authentication URLs ---
     path('register/', views.register, name='register'),
 
