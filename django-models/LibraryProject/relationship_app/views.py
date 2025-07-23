@@ -3,6 +3,7 @@ from django.views.generic import DetailView
 from .models import Library, Book, Librarian
 from django.contrib import messages
 from .forms import CustomUserCreationForm
+from django.contrib.auth.decorators import user_passes_test
 
 def list_books(request):
     books = Book.objects.all()
@@ -48,7 +49,7 @@ def register(request):
     return render(request, 'relationship_app/register.html', {'form': form})
 
 
-
+@user_passes_test(lambda u: u.is_authenticated and u.is_staff, login_url='relationship_app:login')
 def admin_view(request):
     if request.user.is_authenticated and request.user.is_staff:
         libraries = Library.objects.all()
@@ -57,7 +58,7 @@ def admin_view(request):
         messages.error(request, 'You do not have permission to view this page.')
         return redirect('relationship_app:list_books')
     
-
+@user_passes_test (lambda u: hasattr(u, 'librarian'), login_url='relationship_app:login')
 def librarian_view(request):
     if request.user.is_authenticated and hasattr(request.user, 'librarian'):
         librarian = request.user.librarian
@@ -71,8 +72,10 @@ def librarian_view(request):
     else:
         messages.error(request, 'You do not have permission to view this page.')
         return redirect('relationship_app:list_books')
-    
 
+
+
+@user_passes_test (lambda u: u.is_authenticated and not hasattr(u, 'librarian'), login_url='relationship_app:login')
 def member_view(request):
     if request.user.is_authenticated:
         user_books = request.user.books.all()
