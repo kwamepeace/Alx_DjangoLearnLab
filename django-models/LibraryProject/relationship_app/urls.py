@@ -5,8 +5,8 @@ from . import views
 app_name = 'relationship_app' 
 
 urlpatterns = [
-    path('books/', views.book_list_view, name='book_list'),
-    path('libraries/<int:pk>/', views.LibraryDetailView.as_view(), name='library_detail'),
+    path('books/', views.list_books, name='book_list'),
+    path('libraries/<int:pk>/', views.LibraryDetailView.get_library(), name='library_detail'),
 
     # --- Authentication URLs ---
     path('register/', views.register, name='register'),

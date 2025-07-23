@@ -1,7 +1,7 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
+from django.views.generic import DetailView
 from .models import Library, Book, Librarian
-from django.contrib.auth import login
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages
 from .forms import CustomUserCreationForm
 
 def list_books(request):
