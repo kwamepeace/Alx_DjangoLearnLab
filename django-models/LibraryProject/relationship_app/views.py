@@ -5,22 +5,29 @@ from django.contrib.auth import  authenticate, login as auth_login
 from django.contrib.auth.forms import UserCreationForm  
 from django.views.generic import DetailView
 from django.contrib import messages
-from .forms import CustomUserCreationForm, RegisterForm, BookForm
+from .forms import CustomUserCreationForm,  BookForm
 from django.contrib.auth.decorators import permission_required, user_passes_test, login_required
+from . models import *
 
 
-
-
+def homepage(request):
+    """
+    Renders the homepage for the application.
+    """
+    return render(request, 'relationship_app/homepage.html')
 
 def list_books(request):
     books = Book.objects.all()
     context = {
         'books': books
     }
-    return render(request, context)
+    return render(request, 'relationship_app/book_list.html', context)
 
 
 class LibraryDetailView(DetailView):
+    model = Library
+    template_name = 'relationship_app/library_detail.html'  
+    context_object_name = 'library'
     def __init__(self, library_name):
         self.library_name = library_name
 
@@ -58,12 +65,6 @@ def register(request):
         form = CustomUserCreationForm()
     return render(request, 'relationship_app/register.html', {'form': form})
 
-
-def homepage(request):
-    """
-    Renders the homepage for the application.
-    """
-    return render(request, 'relationship_app/homepage.html')
 
 def is_admin(user):
     """Checks if the user has the 'Admin' role."""
