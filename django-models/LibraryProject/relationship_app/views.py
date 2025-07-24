@@ -1,15 +1,30 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Library, Book, Librarian
+from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth import  authenticate, login as auth_login, 
+from django.contrib.auth.forms import UserCreationForm  
+from django.views.generic import DetailView
 from django.contrib import messages
-from .forms import CustomUserCreationForm
-from django.contrib.auth.decorators import user_passes_test, login_required
+from .forms import CustomUserCreationForm, RegisterForm, BookForm
+from django.contrib.auth.decorators import user_passes_test, login_required, permission_required
+
+
+
+def homepage(request):
+    """
+    Renders the homepage for the application.
+    """
+    return render(request, 'relationship_app/homepage.html')
 
 def list_books(request):
     books = Book.objects.all()
-    return render(request, 'relationship_app/list_books.html', {'books': books})
+    context = {
+        'books': books
+    }
+    return render(request, context)
 
 
-class LibraryDetailView:
+class LibraryDetailView(DetailView):
     def __init__(self, library_name):
         self.library_name = library_name
 
@@ -79,3 +94,66 @@ def librarian_view(request):
 def member_view(request):
     """View accessible only to Member users."""
     return render(request, 'relationship_app/member_view.html', {'role': 'Member'})
+
+
+
+
+@login_required
+def admin_view(request):
+    # Example: Check for superuser status or specific group/permission
+    if not request.user.is_superuser:
+        messages.error(request, 'You do not have permission to access the admin dashboard.')
+        return redirect('relationship_app:homepage') # Or a different redirect
+    return render(request, 'relationship_app/admin_dashboard.html')
+
+@login_required
+def librarian_view(request):
+    # Example: Check if user belongs to 'Librarians' group or has a specific permission
+    if not request.user.groups.filter(name='Librarians').exists():
+        messages.error(request, 'You do not have permission to access the librarian dashboard.')
+        return redirect('relationship_app:homepage')
+    return render(request, 'relationship_app/librarian_dashboard.html')
+
+@login_required
+def member_view(request):
+    # All logged-in users are generally considered members for this view
+    return render(request, 'relationship_app/member_dashboard.html')
+
+
+
+@permission_required('relationship_app.can_add_book', raise_exception=True)
+@login_required # Often good to combine with login_required
+def add_book(request):
+    if request.method == 'POST':
+        form = BookForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Book added successfully!')
+            return redirect('relationship_app:book_list') # Redirect to book list
+    else:
+        form = BookForm()
+    return render(request, 'relationship_app/book_form.html', {'form': form, 'action': 'Add'})
+
+@permission_required('relationship_app.can_change_book', raise_exception=True)
+@login_required
+def edit_book(request, pk):
+    book = get_object_or_404(Book, pk=pk)
+    if request.method == 'POST':
+        form = BookForm(request.POST, instance=book)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Book updated successfully!')
+            return redirect('relationship_app:book_list') # Redirect to book list
+    else:
+        form = BookForm(instance=book)
+    return render(request, 'relationship_app/book_form.html', {'form': form, 'book': book, 'action': 'Edit'})
+
+@permission_required('relationship_app.can_delete_book', raise_exception=True)
+@login_required
+def delete_book(request, pk):
+    book = get_object_or_404(Book, pk=pk)
+    if request.method == 'POST':
+        book.delete()
+        messages.success(request, 'Book deleted successfully!')
+        return redirect('relationship_app:book_list') # Redirect to book list
+    return render(request, 'relationship_app/book_confirm_delete.html', {'book': book})

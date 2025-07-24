@@ -1,17 +1,12 @@
-<!-- register.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Register</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-</head>
-<body>
+{% extends 'relationship_app/base.html' %} 
+
+{% block title %}Register{% endblock %} {# Sets the specific title for this page #}
+
+{% block content %} {# This block holds the unique content for the register page #}
     <h1>Register</h1>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Register</button>
     </form>
-</body>
-</html>
+{% endblock content %} {# End of the block content #}

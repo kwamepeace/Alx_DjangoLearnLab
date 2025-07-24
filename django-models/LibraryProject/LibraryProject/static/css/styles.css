@@ -1,0 +1,294 @@
+/* Import a futuristic-looking font from Google Fonts (optional, but recommended) */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Share+Tech+Mono&display=swap');
+
+/* General Body and Container Styles */
+body {
+    font-family: 'Share Tech Mono', monospace; /* Futuristic monospace font */
+    margin: 0;
+    padding: 0; /* Remove padding here, let .container handle it */
+    background-color: #0d1a26; /* Deep space dark blue */
+    color: #00e0ff; /* Neon blue for primary text */
+    line-height: 1.6;
+    display: flex; /* Use flexbox to center content vertically/horizontally */
+    min-height: 100vh; /* Full viewport height */
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+}
+
+.container {
+    max-width: 900px; /* Slightly wider container */
+    width: 90%; /* Responsive width */
+    margin: 20px auto;
+    background-color: #1a2a3a; /* Slightly lighter dark blue for container */
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 224, 255, 0.3), /* Subtle neon blue glow */
+                0 0 40px rgba(0, 224, 255, 0.1);
+    border: 1px solid #00aaff; /* Thin neon border */
+    position: relative; /* For pseudo-elements */
+    overflow: hidden; /* Hide overflow from glow effects */
+}
+
+/* Optional: Add a subtle background pattern for tech feel */
+.container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+        45deg,
+        rgba(0,0,0,0.1),
+        rgba(0,0,0,0.1) 2px,
+        transparent 2px,
+        transparent 10px
+    );
+    opacity: 0.05;
+    pointer-events: none;
+}
+
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Orbitron', sans-serif; /* More impactful futuristic font for headings */
+    color: #00e0ff; /* Neon blue */
+    text-shadow: 0 0 8px rgba(0, 224, 255, 0.7); /* Text glow effect */
+    margin-top: 0;
+    margin-bottom: 25px;
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: 2px;
+}
+
+h1 { font-size: 2.5em; }
+h2 { font-size: 2em; }
+
+/* Navigation Styles */
+nav {
+    margin-bottom: 35px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(0, 224, 255, 0.2); /* Faded neon border */
+    display: flex;
+    flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px; /* Space between nav items */
+}
+
+nav .welcome-message {
+    font-weight: bold;
+    color: #a0f0ff; /* Lighter neon blue */
+    font-size: 1.1em;
+    flex-grow: 1; /* Allow it to take available space */
+}
+
+nav p {
+    margin: 0;
+    display: flex; /* Use flex for internal links too */
+    gap: 15px;
+}
+
+nav a {
+    text-decoration: none;
+    color: #00e0ff;
+    font-weight: 500;
+    transition: all 0.3s ease-in-out;
+    padding: 5px 0;
+    position: relative;
+}
+
+nav a:hover {
+    color: #a0f0ff;
+    text-shadow: 0 0 5px #00e0ff; /* Subtle glow on hover */
+}
+
+/* Underline animation on hover for nav links */
+nav a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: #00e0ff;
+    transition: width 0.3s ease-in-out;
+}
+
+nav a:hover::after {
+    width: 100%;
+}
+
+nav .logout-link {
+    background-color: #c0392b; /* Red for logout */
+    color: white;
+    padding: 8px 18px;
+    border-radius: 5px;
+    text-shadow: none; /* No glow for logout button itself */
+    box-shadow: 0 0 10px rgba(192, 57, 43, 0.5); /* Red glow */
+    transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+nav .logout-link:hover {
+    background-color: #e74c3c; /* Brighter red on hover */
+    box-shadow: 0 0 15px rgba(231, 76, 60, 0.7);
+    text-decoration: none;
+}
+
+/* Buttons and Inputs */
+button, input[type="submit"], .button {
+    display: inline-block;
+    padding: 12px 25px;
+    background-color: #00aaff; /* Primary button color */
+    color: #0d1a26; /* Dark text on button */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-family: 'Orbitron', sans-serif;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 0 15px rgba(0, 170, 255, 0.5); /* Button glow */
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+button:hover, input[type="submit"]:hover, .button:hover {
+    background-color: #00e0ff; /* Brighter neon blue on hover */
+    box-shadow: 0 0 20px rgba(0, 224, 255, 0.7);
+    transform: translateY(-2px); /* Lift effect */
+}
+
+button:active, input[type="submit"]:active, .button:active {
+    transform: translateY(0);
+}
+
+/* Forms */
+form p {
+    margin-bottom: 20px;
+}
+
+form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #a0f0ff;
+    font-size: 1.05em;
+}
+
+form input[type="text"],
+form input[type="password"],
+form input[type="email"],
+form textarea,
+form select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #00aaff; /* Neon border for inputs */
+    background-color: #0d1a26; /* Dark input background */
+    color: #00e0ff; /* Neon text in inputs */
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 1em;
+    font-family: 'Share Tech Mono', monospace;
+    transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+form input[type="text"]:focus,
+form input[type="password"]:focus,
+form input[type="email"]:focus,
+form textarea:focus,
+form select:focus {
+    border-color: #00e0ff; /* Brighter neon on focus */
+    outline: none;
+    box-shadow: 0 0 10px rgba(0, 224, 255, 0.7); /* Input glow on focus */
+}
+
+/* Messages (Django messages framework) */
+.messages {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 25px;
+}
+
+.messages li {
+    padding: 15px 25px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    font-weight: bold;
+    color: #0d1a26; /* Dark text for message backgrounds */
+    text-shadow: none; /* No glow for messages */
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+.messages .success {
+    background-color: #2ecc71; /* Green */
+}
+
+.messages .info {
+    background-color: #3498db; /* Blue */
+}
+
+.messages .warning {
+    background-color: #f39c12; /* Orange */
+}
+
+.messages .error {
+    background-color: #e74c3c; /* Red */
+}
+
+/* Horizontal Rule (for separators) */
+hr {
+    border: 0;
+    height: 1px;
+    background: rgba(0, 224, 255, 0.15);
+    margin: 30px 0;
+    box-shadow: 0 0 5px rgba(0, 224, 255, 0.3);
+}
+
+/* Basic List Styling (for books, etc.) */
+ul {
+    padding-left: 25px;
+    list-style: none; /* Remove default bullets */
+}
+
+ul li {
+    margin-bottom: 10px;
+    position: relative;
+    padding-left: 15px; /* Space for custom bullet */
+    color: #a0f0ff;
+}
+
+ul li::before {
+    content: '›'; /* Futuristic arrow as bullet */
+    position: absolute;
+    left: 0;
+    color: #00e0ff;
+    font-weight: bold;
+    font-size: 1.2em;
+    line-height: 1;
+}
+
+
+/* Specific styling for the welcome section on homepage */
+.welcome-section {
+    text-align: center;
+    padding: 50px 0;
+    background-color: #1a2a3a; /* Match container background */
+    border-radius: 8px;
+    margin-bottom: 30px;
+    border: 1px dashed rgba(0, 224, 255, 0.3);
+    box-shadow: inset 0 0 10px rgba(0, 224, 255, 0.2); /* Inner glow */
+}
+.welcome-section h1 {
+    color: #00e0ff;
+    font-size: 3em;
+    text-shadow: 0 0 15px rgba(0, 224, 255, 0.9);
+}
+.welcome-section p {
+    color: #a0f0ff;
+    font-size: 1.2em;
+    max-width: 600px;
+    margin: 15px auto 0;
+}

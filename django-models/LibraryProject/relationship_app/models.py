@@ -13,7 +13,16 @@ class Author(models.Model):
 class Book(models.Model):
     title = models.CharField(max_length=200)
     author = models.ForeignKey(Author, on_delete = models.CASCADE)
+    
 
+    class Meta:
+        permissions = (
+            ("can_add_book", "Can add book"),
+            ("can_change_book", "Can change book"),
+            ("can_delete_book", "Can delete book"),
+        )
+        verbose_name = "Book"
+        verbose_name_plural = "Books"
 
     def __str__(self):
         return self.title
@@ -43,3 +52,4 @@ class UserProfile(models.Model):
     ]
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     role = models.CharField(max_length=100, choices = role_choice, default='Member')
+

@@ -1,21 +1,13 @@
+{% load static %} {# Make sure this is at the very top if it extends another template, otherwise it's fine here #}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Library Project{% endblock %}</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
-        .container { max-width: 800px; margin: 0 auto; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        nav { margin-bottom: 20px; }
-        nav a { margin-right: 15px; text-decoration: none; color: #007bff; }
-        nav a:hover { text-decoration: underline; }
-        h1 { color: #0056b3; }
-        .message { background-color: #e9ecef; border-left: 5px solid #007bff; padding: 10px; margin-bottom: 15px; }
-        .button { display: inline-block; padding: 10px 15px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; }
-        .button:hover { background-color: #0056b3; }
-        .logout-link { float: right; }
-    </style>
+    {# Link to your external stylesheet #}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    
 </head>
 <body>
     <div class="container">
