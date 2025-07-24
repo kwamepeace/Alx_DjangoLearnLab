@@ -2,7 +2,7 @@ from django.urls import path
 from django.contrib.auth import views as auth_views 
 # or from django.contrib.auth.views import LoginView, LogoutView
 from .views import views
-from .views import register, homepage, list_books, LibraryDetailView
+from .views import list_books
 
 app_name = 'relationship_app' 
 
