@@ -10,11 +10,7 @@ from django.contrib.auth.decorators import permission_required, user_passes_test
 
 
 
-def homepage(request):
-    """
-    Renders the homepage for the application.
-    """
-    return render(request, 'relationship_app/homepage.html')
+
 
 def list_books(request):
     books = Book.objects.all()
@@ -62,6 +58,12 @@ def register(request):
         form = CustomUserCreationForm()
     return render(request, 'relationship_app/register.html', {'form': form})
 
+
+def homepage(request):
+    """
+    Renders the homepage for the application.
+    """
+    return render(request, 'relationship_app/homepage.html')
 
 def is_admin(user):
     """Checks if the user has the 'Admin' role."""
