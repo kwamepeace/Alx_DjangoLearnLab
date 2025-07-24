@@ -1,12 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Library, Book, Librarian
 from django.contrib.auth.views import LoginView, LogoutView
-from django.contrib.auth import  authenticate, login as auth_login, 
+from django.contrib.auth import  authenticate, login as auth_login
 from django.contrib.auth.forms import UserCreationForm  
 from django.views.generic import DetailView
 from django.contrib import messages
 from .forms import CustomUserCreationForm, RegisterForm, BookForm
-from django.contrib.auth.decorators import user_passes_test, login_required, permission_required
+from django.contrib.auth.decorators import permission_required, user_passes_test, login_required
 
 
 
