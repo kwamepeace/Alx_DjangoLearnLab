@@ -53,8 +53,3 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     role = models.CharField(max_length=100, choices = role_choice, default='Member')
 
-class CustomUser(AbstractUser):
-    
-    #A custom user model extending what is in AbsractUser without changing it
-    date_of_birth = models.DateField(null=True, blank=True)
-    profile_photo = models.ImageField(upload_to='profile_photos/', null=True, blank=True)
