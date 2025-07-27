@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-# Create your models here.
+
 class Author(models.Model):
     name = models.CharField (max_length=100)
 
@@ -44,12 +44,19 @@ class Librarian(models.Model):
         return self.name
     
 
-class UserProfile(models.Model):
-    role_choice =[
-        ('Admin' , 'Admin'),
-        ('Librarian', 'Librarian'),
-        ('Member', 'Member')
-    ]
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    role = models.CharField(max_length=100, choices = role_choice, default='Member')
 
+
+class UserProfile(models.Model):
+    ROLE_CHOICES = [
+    ('Admin', 'Admin'),
+    ('Librarian', 'Librarian'),
+    ('Member', 'Member'),
+]
+    # Typing the user to Django default user, which handles fields like username, password, and email 
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    #Selecting role choices
+    role = models.CharField(max_length=100, choices=ROLE_CHOICES, default='Member')
+    
+
+    def __str__(self):
+        return f"{self.user.username}'s Profile"

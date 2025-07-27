@@ -1,6 +1,7 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from . models import Book
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+from . models import Book, Librarian, Library, Author, UserProfile
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
@@ -9,13 +10,9 @@ class CustomUserCreationForm(UserCreationForm):
 
 
 class RegisterForm(forms.ModelForm):
-    username = forms.CharField(max_length=150, required=True)
-    password = forms.CharField(widget=forms.PasswordInput, required=True)
-    password2 = forms.CharField(widget=forms.PasswordInput, label="Confirm Password", required=True)
-
     class Meta:
-        model = User
-        fields = ['username', 'password', 'password2', 'first_name', 'last_name', 'email']
+        model = UserProfile
+        fields = ['role', 'user']
 
     def clean_password2(self):
         password = self.cleaned_data.get('password')
@@ -32,8 +29,9 @@ class RegisterForm(forms.ModelForm):
         return user
     
 
+
     
-    class BookForm(forms.ModelForm):
-        class Meta:
-            model = Book
-            fields = ['title', 'author', 'isbn', 'published_date']
+class BookForm(forms.ModelForm):
+    class Meta:
+        model = Book
+        fields = ['title', 'author']

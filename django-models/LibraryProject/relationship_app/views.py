@@ -1,8 +1,6 @@
-from django.contrib.auth import  login
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Library, Book, Librarian
-from django.contrib.auth.views import LoginView, LogoutView
-from django.contrib.auth.forms import UserCreationForm  
+from django.contrib.auth import login
 from django.views.generic.detail import DetailView
 from django.contrib import messages
 from .forms import CustomUserCreationForm,  BookForm
@@ -107,20 +105,20 @@ def admin_view(request):
     if not request.user.is_superuser:
         messages.error(request, 'You do not have permission to access the admin dashboard.')
         return redirect('relationship_app:homepage') # Or a different redirect
-    return render(request, 'relationship_app/admin_dashboard.html')
+    return render(request, 'relationship_app/admin_view.html')
 
 @login_required
 def librarian_view(request):
     # Example: Check if user belongs to 'Librarians' group or has a specific permission
     if not request.user.groups.filter(name='Librarians').exists():
-        messages.error(request, 'You do not have permission to access the librarian dashboard.')
+        messages.error(request, 'You do not have permission to access the librarian view.')
         return redirect('relationship_app:homepage')
-    return render(request, 'relationship_app/librarian_dashboard.html')
+    return render(request, 'relationship_app/librarian_view.html')
 
 @login_required
 def member_view(request):
     # All logged-in users are generally considered members for this view
-    return render(request, 'relationship_app/member_dashboard.html')
+    return render(request, 'relationship_app/member_view.html')
 
 
 
