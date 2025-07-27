@@ -1,0 +1,17 @@
+{% extends 'relationship_app/base.html' %}
+{% load static %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+    <h1>Welcome, {{ user.username }}!</h1>
+    <div class="message">
+        <p>This is the **{{ role }}** dashboard. You have full administrative access.</p>
+        <p>Here, you can manage users, roles, and overall system settings.</p>
+        <ul>
+            <li><a href="{% url 'admin:index' %}">Go to Django Admin Panel</a></li>
+            <li>Manage all users and their profiles.</li>
+            <li>Oversee library operations.</li>
+        </ul>
+    </div>
+{% endblock %}

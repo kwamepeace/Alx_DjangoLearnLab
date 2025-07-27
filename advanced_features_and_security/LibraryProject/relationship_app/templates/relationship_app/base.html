@@ -1,0 +1,43 @@
+{% load static %} {# Make sure this is at the very top if it extends another template, otherwise it's fine here #}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Library Project{% endblock %}</title>
+    {# Link to your external stylesheet #}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    
+</head>
+<body>
+    <div class="container">
+        <nav>
+            {% if user.is_authenticated %}
+                Hello, {{ user.username }}! (Role: {{ user.profile.get_role_display }})
+                <a href="{% url 'relationship_app:logout' %}" class="logout-link button">Logout</a>
+                <hr>
+                <p>
+                    <a href="{% url 'relationship_app:admin_dashboard' %}">Admin Dashboard</a> |
+                    <a href="{% url 'relationship_app:librarian_dashboard' %}">Librarian Dashboard</a> |
+                    <a href="{% url 'relationship_app:member_dashboard' %}">Member Dashboard</a> |
+                    <a href="{% url 'relationship_app:book_list' %}">Books</a>
+                </p>
+            {% else %}
+                <a href="{% url 'relationship_app:login' %}">Login</a> |
+                <a href="{% url 'relationship_app:register' %}">Register</a>
+            {% endif %}
+        </nav>
+
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+</html>

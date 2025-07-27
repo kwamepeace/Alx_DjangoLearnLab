@@ -1,0 +1,27 @@
+{% extends 'relationship_app/base.html' %}
+{% load static %}
+
+{% block title %}Welcome!{% endblock %}
+
+{% block content %}
+    <h1>Welcome to the Library Management System!</h1>
+    <p>Please log in or register to access the site features.</p>
+
+    {% if not user.is_authenticated %}
+        <p>
+            <a href="{% url 'relationship_app:login' %}" class="button">Login</a>
+            <a href="{% url 'relationship_app:register' %}" class="button">Register</a>
+        </p>
+    {% else %}
+        <p>You are logged in as {{ user.username }}.</p>
+        <p>Your role is: {{ user.profile.get_role_display }}</p>
+        <p>Go to your dashboard:</p>
+        <ul>
+            <li><a href="{% url 'relationship_app:admin_dashboard' %}">Admin Dashboard</a></li>
+            <li><a href="{% url 'relationship_app:librarian_dashboard' %}">Librarian Dashboard</a></li>
+            <li><a href="{% url 'relationship_app:member_dashboard' %}">Member Dashboard</a></li>
+        </ul>
+        <p><a href="{% url 'relationship_app:logout' %}" class="button">Logout</a></p>
+    {% endif %}
+
+{% endblock %}
