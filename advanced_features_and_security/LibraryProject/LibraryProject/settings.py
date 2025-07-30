@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-k1*a+bl)#1wtr-*qf3((es)^@8jv$=6&881ju%9r$#%+(55zex'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -139,3 +139,13 @@ STATICFILES_DIRS = [
 AUTH_USER_MODEL = 'bookshelf.CustomUser' # Custom user model for the application
 
 LOGOUT_REDIRECT_URL = 'relationship_app:login'
+
+SECURE_BROWSER_XSS_FILTER = True
+
+X_FRAME_OPTIONS = 'DENY'  # Prevents clickjacking attacks
+
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevents MIME type sniffing
+
+CSRF_COOKIE_SECURE = True  # CSRF cookie is only sent over HTTPS
+
+SESSION_COOKIE_SECURE = True  # Session cookie is only sent over HTTPS
