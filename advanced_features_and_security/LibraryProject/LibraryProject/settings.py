@@ -136,6 +136,6 @@ STATICFILES_DIRS = [
 ]
 
 
-AUTH_USER_MODEL = 'relationship_app.CustomUser' # Custom user model for the application
+AUTH_USER_MODEL = 'bookshelf.CustomUser' # Custom user model for the application
 
 LOGOUT_REDIRECT_URL = 'relationship_app:login'
