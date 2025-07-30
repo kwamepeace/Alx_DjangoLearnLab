@@ -1,4 +1,4 @@
-{% load static %} {# Make sure this is at the very top if it extends another template, otherwise it's fine here #}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,14 +7,18 @@
     <title>{% block title %}Library Project{% endblock %}</title>
     {# Link to your external stylesheet #}
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    
 </head>
 <body>
     <div class="container">
         <nav>
             {% if user.is_authenticated %}
-                Hello, {{ user.username }}! (Role: {{ user.profile.get_role_display }})
-                <a href="{% url 'relationship_app:logout' %}" class="logout-link button">Logout</a>
+                Hello, {{ user.username }}! (Role: {{ user.userprofile.get_role_display }})
+                <form method="post" action="{% url 'relationship_app:logout' %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="logout-link button" style="background:none; border:none; color:inherit; cursor:pointer; font-size:inherit; padding:0; margin-left: 10px;">
+                        Logout
+                    </button>
+                </form>
                 <hr>
                 <p>
                     <a href="{% url 'relationship_app:admin_dashboard' %}">Admin Dashboard</a> |
