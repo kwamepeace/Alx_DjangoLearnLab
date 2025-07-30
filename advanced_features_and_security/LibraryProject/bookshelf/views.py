@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import permission_required, login_required
 
 @permission_required('bookshelf.can_view_book', raise_exception=True)
 @login_required
-def view_books(request):
+def book_list(request):
     # Logic to retrieve and display books
     books = Book.objects.all()
     return render(request, 'bookshelf/view_books.html', {'books': books})
