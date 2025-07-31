@@ -1,6 +1,8 @@
 from django.contrib import admin
-from .models import Book
-from django.contrib.auth.admin import UserAdmin
+from .models import Book, CustomUser
+from django.contrib.auth.admin import UserAdmin as UserAdmin
+from django.contrib.auth.models import Group
+from .forms import UserCreationForm, CustomUserChangeForm
 
 
 class Bookadmin(admin.ModelAdmin):
@@ -8,39 +10,43 @@ class Bookadmin(admin.ModelAdmin):
     list_filter = ('publication_year','author')
     search_fields = ('publication_year', )
 
-
-
-admin.site.register(Book, Bookadmin)
 # This code registers the Book and BookAdmin model with the Django admin site
+admin.site.register(Book, Bookadmin)
+
 
 class CustomUserAdmin(UserAdmin):
-    # Add custom fields to the add user form
-    add_fieldsets = UserAdmin.add_fieldsets + (
-        (None, {'fields': ('date_of_birth', 'profile_photo')}),
-    )
+    """
+    Custom admin for the CustomUser model.
+    This allows us to add custom fields to the user creation and change forms.
+    """
+    add_form = UserCreationForm
+    form = CustomUserChangeForm
+    model = CustomUser
 
-    # Add custom fields to the change user form
-    fieldsets = UserAdmin.fieldsets + (
-        (None, {'fields': ('date_of_birth', 'profile_photo')}),
-    )
-
-    # Add custom fields to the list display
-    list_display = ('email', 'first_name', 'last_name', 'is_staff', 'date_of_birth')
-
-    # Optionally add custom fields to search fields
-    search_fields = ('email', 'first_name', 'last_name', 'date_of_birth')
-
-    # Optionally add custom fields to list filters
+    list_display = ('username', 'email', 'date_of_birth', 'profile_photo', 'is_staff')
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'groups', 'date_of_birth')
+    fieldsets = [
+        (None, {'fields': ('email', 'password')}),
+        ('Personal info', {'fields': ( 'date_of_birth', 'profile_photo')}),
+        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+        ('Important dates', {'fields': ('last_login', 'date_joined')}),
+    ]
 
+    add_fieldsets = [
+        (None, 
+        {   'classes': ['wide'],
+            'fields': [ 'email', 'password1', 'password2', 'date_of_birth', 'profile_photo']
+            }
+        ),
+    ]
+    search_fields = ('email', 'username', 'date_of_birth')
+    ordering = {'email',}   
+    filter_horizontal = []
 
-# Unregister the default User model admin, if it was registered
-# This might not be strictly necessary if you never registered the default User,
-# but it's good practice to ensure no conflicts if you inherit from AbstractUser
-try:
-    admin.site.unregister(CustomUser) # If CustomUser was registered directly without a custom admin
-except admin.sites.NotRegistered:
-    pass
-
-# Register your CustomUser model with your CustomUserAdmin
+# Register the CustomUser model with the custom admin
 admin.site.register(CustomUser, CustomUserAdmin)
+
+# Unregister the default Group model to avoid conflicts
+# Optional, but if you don't need the Group model, you can unregister it
+admin.site.unregister(Group)
+
