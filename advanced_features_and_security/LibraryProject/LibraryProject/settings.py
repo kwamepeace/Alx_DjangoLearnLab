@@ -157,3 +157,5 @@ SECURE_HSTS_SECONDS = 31536000  # Enable HTTP Strict Transport Security for 1 ho
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Apply HSTS to all subdomains
 
 SECURE_HSTS_PRELOAD = True  # Allow this site to be included in the HSTS preload list
+
+SECURE PROXY SSL HEADER = 'HTTP_X_FORWARDED_PROTO'  # Use this header to determine if the request is secure 
