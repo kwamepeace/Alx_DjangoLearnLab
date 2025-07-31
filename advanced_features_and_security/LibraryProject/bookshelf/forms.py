@@ -3,7 +3,7 @@ from .models import CustomUser
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
 
-
+ExampleForm = forms.Form
 class UserCreationForm(forms.ModelForm):
     """
     A form for creating new users. Includes all the required fields,
