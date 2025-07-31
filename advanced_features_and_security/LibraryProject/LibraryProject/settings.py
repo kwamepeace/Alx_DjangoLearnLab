@@ -158,4 +158,4 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Apply HSTS to all subdomains
 
 SECURE_HSTS_PRELOAD = True  # Allow this site to be included in the HSTS preload list
 
-SECURE PROXY SSL HEADER = 'HTTP_X_FORWARDED_PROTO'  # Use this header to determine if the request is secure 
+SECURE_PROXY_SSL_HEADER = 'HTTP_X_FORWARDED_PROTO'  # Use this header to determine if the request is secure 
