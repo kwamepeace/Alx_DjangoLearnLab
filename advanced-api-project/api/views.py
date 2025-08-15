@@ -20,12 +20,12 @@ class ListView(generics.ListAPIView):
     for filtering
     you can choose either option below
     """
-    filterset_fields = ('title', 'author', 'published_date')
+    filterset_fields = ('title', 'author', 'publication_year')
     filterset_class = BookFilter
 
     #searching
     search_fields = ('title', 'author__name')
-    ordering_fields = ('title', 'published_date')
+    ordering_fields = ('title', 'publication_year')
 
 class DetailView(generics.RetrieveAPIView):
     queryset = Book.objects.all()
