@@ -2,7 +2,7 @@ from django.test import TestCase
 from .models import Book
 
 
-class BookTestCase(TestCase):
+class APITestCase(TestCase):
     def setUp(self):
         Book.objects.create(title="Empire", publication_year=1879)
         Book.objects.create(title="The richest man in Babylon", publication_year=2020)
