@@ -64,7 +64,7 @@ class MyAPIViewTests(APITestCase):
         """
         Ensure a regular user is denied access to an admin-only view.
         """
-        self.client.force_authenticate(user=self.regular_user)
+        self.client.login(user=self.regular_user)
         response = self.client.get(self.list_url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -72,7 +72,7 @@ class MyAPIViewTests(APITestCase):
         """
         Ensure an admin user is granted access.
         """
-        self.client.force_authenticate(user=self.admin_user)
+        self.client.login(user=self.admin_user)
         response = self.client.get(self.list_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -81,7 +81,7 @@ class MyAPIViewTests(APITestCase):
         Ensure the book list view returns the correct serialized data.
         This test uses `response.data`.
         """
-        self.client.force_authenticate(user=self.admin_user)
+        self.client.login(user=self.admin_user)
         Book.objects.create(title="The richest man in Babylon", publication_year=2020, author=self.author)
         response = self.client.get(self.list_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -102,7 +102,7 @@ class MyAPIViewTests(APITestCase):
         Ensure a new book can be created with a POST request and the correct data is returned.
         This test also uses `response.data`.
         """
-        self.client.force_authenticate(user=self.admin_user)
+        self.client.login(user=self.admin_user)
         response = self.client.post(self.list_url, self.book_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Book.objects.count(), 2) # Now 2 books exist in the database
@@ -117,7 +117,7 @@ class MyAPIViewTests(APITestCase):
         """
         Ensure that a book cannot be created with a publication year in the future.
         """
-        self.client.force_authenticate(user=self.admin_user)
+        self.client.login(user=self.admin_user)
         future_year = date.today().year + 1
         invalid_data = {
             'title': 'Future Book',
@@ -135,7 +135,7 @@ class MyAPIViewTests(APITestCase):
         Ensure a book can be updated with a PUT request and the changes are reflected.
         This test uses `response.data`.
         """
-        self.client.force_authenticate(user=self.admin_user)
+        self.client.login(user=self.admin_user)
         # Assuming there is a detail view URL like 'book-detail'
         detail_url = reverse('book-detail', args=[self.existing_book.pk])
         updated_data = {'title': 'Updated Title', 'publication_year': 2024, 'author': self.author.pk}
@@ -156,7 +156,7 @@ class MyAPIViewTests(APITestCase):
         """
         Ensure a book can be deleted with a DELETE request.
         """
-        self.client.force_authenticate(user=self.admin_user)
+        self.client.login(user=self.admin_user)
         # Assuming there is a detail view URL like 'book-detail'
         detail_url = reverse('book-detail', args=[self.existing_book.pk])
         response = self.client.delete(detail_url)
