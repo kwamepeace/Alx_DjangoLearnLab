@@ -1,0 +1,40 @@
+{% extends "blog/base.html" %}
+{% load static %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+<main class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h1 class="my-4 text-center">Edit Your Profile</h1>
+
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div class="alert alert-success" role="alert">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="card p-4 shadow-sm">
+                <!-- IMPORTANT: The 'enctype' attribute is required for file uploads -->
+                <form method="post" action="{% url 'edit_profile' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <fieldset class="form-group">
+                        <legend class="border-bottom mb-4">User Info</legend>
+                        {{ user_form.as_p }}
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <legend class="border-bottom mb-4">Profile Picture</legend>
+                        {{ profile_form.as_p }}
+                    </fieldset>
+                    <button type="submit" class="btn btn-primary mt-3">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
