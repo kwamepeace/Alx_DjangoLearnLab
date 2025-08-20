@@ -1,0 +1,35 @@
+{% extends "blog/base.html" %}
+
+{% load static %}
+
+{% block title %}Blog Posts{% endblock %}
+
+{% block content %}
+<main class="container">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <h1 class="my-4 text-center">All Blog Posts</h1>
+            <p class="lead text-center text-muted">This page will eventually display a list of all your blog posts.</p>
+            
+            <!-- Placeholder for a future blog post list -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="card-title">Sample Blog Post Title</h2>
+                    <p class="card-text">This is a placeholder for a blog post summary. When you create your post model and views, this will be replaced with real content.</p>
+                    <a href="#" class="btn btn-primary">Read More &rarr;</a>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="card-title">Another Sample Post</h2>
+                    <p class="card-text">You can use a Django loop to iterate through a list of posts and display them here.</p>
+                    <a href="#" class="btn btn-primary">Read More &rarr;</a>
+                </div>
+            </div>
+            
+            <!-- End of placeholders -->
+        </div>
+    </div>
+</main>
+{% endblock %}

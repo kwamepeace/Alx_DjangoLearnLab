@@ -69,7 +69,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'Django_blog.wsgi.application'
+WSGI_APPLICATION = 'django_blog.wsgi.application'
 
 
 # Database
@@ -128,4 +128,5 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-
+LOGIN_REDIRECT_URL = 'home'  # The URL name to redirect to after successful login
+LOGOUT_REDIRECT_URL = 'login'  # The URL name to redirect to after logout
