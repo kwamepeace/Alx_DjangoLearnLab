@@ -1,12 +1,15 @@
 from django.urls import path
 from django.contrib import admin
-from .views import register, login_view, logout_view, home, posts, edit_profile
+from .views import (
+    register, login_view, logout_view, home, 
+    posts, edit_profile, PostListView
+)
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', home, name='home'),
+    path('', PostListView.as_view(), name='home'),
     path ('register/', register ,name='register'),
     path('login/', login_view, name='login'),
     path('logout/', logout_view, name='logout'),

@@ -4,17 +4,17 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from .forms import LoginForm, CustomUserCreationForm, UserUpdateForm, ProfileUpdateForm
 from .models import Post
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView 
+from django.shortcuts import get_object_or_404
 
 
 
 
 def home(request):
     posts = Post.objects.all().order_by('-published_date')
-    # Create a context dictionary to pass the data to the template
     context = {
         'posts': posts
     }
-    # Render the home template with the posts data
     return render(request, 'blog/home.html', context)
 
 
@@ -92,7 +92,6 @@ def edit_profile(request):
             user_form.save()
             profile_form.save()
             messages.success(request, 'Your profile was updated successfully!')
-            # Redirect to the homepage after successful edit
             return redirect('home')
     else:
         # For a GET request, create form instances with the current user's data
@@ -104,3 +103,19 @@ def edit_profile(request):
         'profile_form': profile_form,
     }
     return render(request, 'blog/edit_profile.html', context)
+
+
+def blog_posts(ListView):
+    model = Post
+    template_name = 'blog/posts.html'
+    context_object_name = 'posts'
+    ordering = ['-published_date']
+
+
+def get_object(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    return render(request,  {'post': post})
+
+
+def blog_post_create(request):
+    if request.method == "POST":

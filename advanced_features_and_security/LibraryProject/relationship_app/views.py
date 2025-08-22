@@ -5,9 +5,6 @@ from django.contrib.auth.decorators import permission_required, user_passes_test
 from .forms import CustomUserCreationForm, BookForm # Ensure these forms are correctly defined
 from .models import Library, Book, Librarian, UserProfile # Import all necessary models
 
-# --- Helper Functions for Role Checking ---
-# IMPORTANT: Ensure your UserProfile model is linked to your CustomUser with a 'userprofile' related_name
-# Or, if your OneToOneField in UserProfile is named 'user', the reverse accessor on CustomUser is 'userprofile' by default.
 
 def is_admin(user):
     """Checks if the user has the 'AD' (Admin) role in their UserProfile."""
@@ -39,6 +36,7 @@ def list_books(request):
     }
     return render(request, 'relationship_app/list_books.html', context)
 
+
 class LibraryDetailView(DetailView):
     """
     Displays details of a specific library, including its books and librarian.
@@ -48,7 +46,6 @@ class LibraryDetailView(DetailView):
     context_object_name = 'library' # The Library object will be available as 'library' in the template
 
     def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
 
         # self.object is the Library instance retrieved by DetailView (based on pk from URL)
@@ -58,17 +55,16 @@ class LibraryDetailView(DetailView):
         context['books'] = library.books.all()
 
         # Add related librarian to the context
-        # Assumes a OneToOne relationship or a ForeignKey where a library has at most one librarian.
         try:
             context['librarian'] = Librarian.objects.get(library=library)
         except Librarian.DoesNotExist:
             context['librarian'] = None # Handle case where no librarian is found for this library
         except Librarian.MultipleObjectsReturned:
             # This handles the unlikely case where multiple librarians are linked
-            # If this is not desired, ensure your model relationships prevent it.
             context['librarian'] = Librarian.objects.filter(library=library).first()
 
         return context
+
 
 def register(request):
     """
@@ -78,9 +74,7 @@ def register(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            # After saving the user, create their UserProfile
-            # Make sure you have UserProfile imported: from .models import UserProfile
-            # And that UserProfile has a OneToOneField to your CustomUser
+
             UserProfile.objects.create(user=user, role='ME') # Default new users to 'Member' role
             messages.success(request, f'Account created successfully for {user.username}. You can now log in.')
             return redirect('relationship_app:login')
@@ -89,6 +83,7 @@ def register(request):
     else:
         form = CustomUserCreationForm()
     return render(request, 'relationship_app/register.html', {'form': form})
+
 
 # --- Role-Based Dashboard Views ---
 # These views are protected by login_required and user_passes_test decorators,
@@ -103,6 +98,7 @@ def admin_dashboard(request):
     """
     return render(request, 'relationship_app/admin_dashboard.html', {'role': 'Admin'})
 
+
 @login_required
 @user_passes_test(is_librarian, login_url='relationship_app:login', redirect_field_name=None)
 def librarian_dashboard(request):
@@ -112,6 +108,7 @@ def librarian_dashboard(request):
     """
     return render(request, 'relationship_app/librarian_dashboard.html', {'role': 'Librarian'})
 
+
 @login_required
 @user_passes_test(is_member, login_url='relationship_app:login', redirect_field_name=None)
 def member_dashboard(request):
@@ -120,6 +117,7 @@ def member_dashboard(request):
     Passes 'Member' role to the template.
     """
     return render(request, 'relationship_app/member_dashboard.html', {'role': 'Member'})
+
 
 # --- Book Management Views (Permissions Required) ---
 # These views require specific permissions defined in your model's Meta class.
@@ -142,6 +140,7 @@ def add_book(request):
         form = BookForm()
     return render(request, 'relationship_app/book_form.html', {'form': form, 'action': 'Add'})
 
+
 @permission_required('relationship_app.change_book', raise_exception=True) # Use lowercase app_label.permission_codename
 @login_required
 def edit_book(request, pk):
@@ -160,6 +159,7 @@ def edit_book(request, pk):
     else:
         form = BookForm(instance=book)
     return render(request, 'relationship_app/book_form.html', {'form': form, 'book': book, 'action': 'Edit'})
+
 
 @permission_required('relationship_app.delete_book', raise_exception=True) # Use lowercase app_label.permission_codename
 @login_required

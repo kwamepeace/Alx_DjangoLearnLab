@@ -1,7 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from django.contrib.auth.models import User
-from . models import Book, Librarian, Library, Author, UserProfile
+from . models import Book, UserProfile
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
@@ -35,3 +35,13 @@ class BookForm(forms.ModelForm):
     class Meta:
         model = Book
         fields = ['title', 'author']
+
+    def clean_data(self):
+        cleaned_data = super().clean()
+        title = cleaned_data.get('title')
+        author = cleaned_data.get('author')
+
+        if not title or not author:
+            raise forms.ValidationError("Both title and author are required.")
+
+        return cleaned_data
