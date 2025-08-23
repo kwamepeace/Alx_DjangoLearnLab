@@ -185,6 +185,19 @@ class BlogDetailView(FormMixin, DetailView):
         comment.save()
         return super().form_valid(form)
 
+class CommentCreateView(CreateView):
+    model = Comment
+    template_name = 'blog/comment_form.html'
+    fields = ['content']
+
+    def form_valid(self, form):
+        # Attach the current user and the post to the comment instance before saving
+        form.instance.author = self.request.user
+        form.instance.post_id = self.kwargs['post_pk']
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('post-detail', kwargs={'pk': self.object.post.pk})
 class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Comment
     template_name = 'blog/comment_update_form.html'
