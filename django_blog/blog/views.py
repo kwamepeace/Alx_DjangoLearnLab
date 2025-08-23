@@ -1,8 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
-from .forms import LoginForm, CustomUserCreationForm, UserUpdateForm, ProfileUpdateForm, CommentForm
+from .forms import LoginForm, CustomUserCreationForm, UserUpdateForm, ProfileUpdateForm, CommentForm, PostForm
 from django.views.generic.edit import FormMixin
 from .models import Post, Comment
 from django.views.generic import (
@@ -11,6 +11,8 @@ from django.views.generic import (
 
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse,reverse_lazy
+from django.db.models import Q
+from taggit.models import Tag
 
 
 
@@ -114,7 +116,7 @@ class BlogsView (ListView):
 class BlogCreateView(CreateView):
     model = Post
     template_name = 'blog/post_form.html'
-    fields = ['title', 'content']
+    form_class = PostForm
     success_url = reverse_lazy('posts')
 
 
@@ -126,7 +128,7 @@ class BlogCreateView(CreateView):
 
 class BlogUpdateView (LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
-    fields = ['title', 'content']
+    form_class = PostForm
     template_name = 'blog/post_form.html'
 
 # This test_func() checks if the current loggged-in user is the author of the post they are trying to update.
@@ -166,7 +168,7 @@ class BlogDetailView(FormMixin, DetailView):
         context = super().get_context_data(**kwargs)
         # Add the comment form and all comments for this post to the context
         context['form'] = self.get_form()
-        context['comments'] = self.get_object().comments.all().order_by('-created_date')
+        context['comments'] = self.get_object().comments.all().order_by('-created_at')
         return context
 
     def post(self, request, *args, **kwargs):
@@ -185,19 +187,6 @@ class BlogDetailView(FormMixin, DetailView):
         comment.save()
         return super().form_valid(form)
 
-# class CommentCreateView(CreateView):
-#     model = Comment
-#     template_name = 'blog/comment_form.html'
-#     fields = ['content']
-
-#     def form_valid(self, form):
-#         # Attach the current user and the post to the comment instance before saving
-#         form.instance.author = self.request.user
-#         form.instance.post_id = self.kwargs['post_pk']
-#         return super().form_valid(form)
-
-#     def get_success_url(self):
-#         return reverse('post-detail', kwargs={'pk': self.object.post.pk})
     
 
 class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -229,6 +218,43 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         comment = self.get_object()
         return self.request.user == comment.author
 
+
+def post_list_by_tag(request, tag_slug=None):
+    """
+    Displays a list of posts filtered by a specific tag.
+    """
+    posts = Post.objects.all()
+    tag = None
+    if tag_slug:
+        tag = get_object_or_404(Tag, slug=tag_slug)
+        posts = posts.filter(tags__in=[tag])
+    
+    context = {
+        'posts': posts,
+        'tag': tag
+    }
+    return render(request, 'blog/post_list.html', context)
+
+def search_results(request):
+    """
+    Handles user queries and displays matching posts.
+    """
+    query = request.GET.get('q')
+    if query:
+        # Use Q objects to perform a complex search across multiple fields
+        posts = Post.objects.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(tags__name__icontains=query)
+        ).distinct()
+    else:
+        posts = Post.objects.none() # Return an empty queryset if no query
+    
+    context = {
+        'query': query,
+        'posts': posts
+    }
+    return render(request, 'blog/search_results.html', context)
 
 
     

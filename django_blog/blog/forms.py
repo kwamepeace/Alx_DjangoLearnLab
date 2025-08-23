@@ -1,7 +1,8 @@
 from django.contrib.auth.forms import  UserCreationForm
 from django import forms
 from django.contrib.auth.models import User
-from .models import Profile, Comment
+from .models import Profile, Comment, Post
+
 
 
 
@@ -59,6 +60,18 @@ class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['profile_picture']
+
+
+class PostForm(forms.ModelForm):
+    """
+    Form for creating and updating blog posts.
+    """
+    class Meta:
+        model = Post
+        fields = ['title', 'content', 'tags']
+        widgets = {
+            'tags': forms.TextInput(attrs={'data-role': 'tagsinput'}),
+        }
 
 
 class CommentForm(forms.ModelForm):
