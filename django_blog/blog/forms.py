@@ -2,7 +2,7 @@ from django.contrib.auth.forms import  UserCreationForm
 from django import forms
 from django.contrib.auth.models import User
 from .models import Profile, Comment, Post
-
+from taggit.forms import TagField
 
 
 
@@ -72,6 +72,27 @@ class PostForm(forms.ModelForm):
         widgets = {
             'tags': forms.TextInput(attrs={'data-role': 'tagsinput'}),
         }
+
+class PostForm(forms.ModelForm):
+    """
+    Form for creating and updating blog posts.
+    """
+    # This is the key change. We explicitly define the 'tags' field
+    # as a TagField and apply your custom widget to it.
+    tags = TagField(required=False, widget=forms.TextInput(attrs={'data-role': 'tagsinput'}))
+
+    class Meta:
+        model = Post
+        fields = ['title', 'content', 'tags']
+        widgets = {
+             'content': forms.Textarea(attrs={
+                 'class': 'form-control', 
+                 'placeholder' : 'Write your post content here ....',
+                 'rows': 10
+             })
+        }
+
+
 
 
 class CommentForm(forms.ModelForm):
