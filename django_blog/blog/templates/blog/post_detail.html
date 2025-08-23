@@ -1,0 +1,24 @@
+<!-- blog/templates/blog/post_detail.html -->
+
+{% extends "blog/base.html" %}
+
+{% load static %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>{{ post.title }}</h1>
+        <p class="text-muted">By {{ post.author }} on {{ post.published_date|date:"F j, Y, P" }}</p>
+        <p>{{ post.content }}</p>
+        <div>
+            <!-- Links for updating and deleting, only visible to the author. -->
+            {% if user.is_authenticated and user.id == post.author.id %}
+                <a href="{% url 'post-update' post.pk %}" class="btn">Edit</a>
+                <a href="{% url 'post-delete' post.pk %}" class="btn btn-danger">Delete</a>
+            {% endif %}
+        </div>
+    </div>
+    <br>
+    <a href="{% url 'posts' %}">Back to All Posts</a>
+{% endblock content %}

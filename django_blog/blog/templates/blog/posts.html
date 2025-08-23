@@ -1,3 +1,5 @@
+<!-- blog/templates/blog/posts.html -->
+
 {% extends "blog/base.html" %}
 
 {% load static %}
@@ -9,26 +11,24 @@
     <div class="row">
         <div class="col-md-8 mx-auto">
             <h1 class="my-4 text-center">All Blog Posts</h1>
-            <p class="lead text-center text-muted">This page will eventually display a list of all your blog posts.</p>
             
-            <!-- Placeholder for a future blog post list -->
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h2 class="card-title">Sample Blog Post Title</h2>
-                    <p class="card-text">This is a placeholder for a blog post summary. When you create your post model and views, this will be replaced with real content.</p>
-                    <a href="#" class="btn btn-primary">Read More &rarr;</a>
-                </div>
-            </div>
-
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h2 class="card-title">Another Sample Post</h2>
-                    <p class="card-text">You can use a Django loop to iterate through a list of posts and display them here.</p>
-                    <a href="#" class="btn btn-primary">Read More &rarr;</a>
-                </div>
-            </div>
+            <!-- Check if there are any posts to display -->
+            {% if object_list %}
+                <!-- Loop through all the posts in the list -->
+                {% for post in object_list %}
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <!-- Link to the individual post using the 'post-detail' URL pattern -->
+                            <h2 class="card-title"><a href="{% url 'post-detail' post.pk %}">{{ post.title }}</a></h2>
+                            <p class="card-text">{{ post.content|truncatechars:150 }}</p>
+                            <a href="{% url 'post-detail' post.pk %}" class="btn btn-primary">Read More &rarr;</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-center text-muted">No blog posts available yet. Be the first to create one!</p>
+            {% endif %}
             
-            <!-- End of placeholders -->
         </div>
     </div>
 </main>

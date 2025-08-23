@@ -4,8 +4,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from .forms import LoginForm, CustomUserCreationForm, UserUpdateForm, ProfileUpdateForm
 from .models import Post
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView 
-from django.shortcuts import get_object_or_404
+from django.views.generic import (
+    ListView, DetailView, CreateView, UpdateView, DeleteView
+) 
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.urls import reverse_lazy
 
 
 
@@ -18,11 +21,11 @@ def home(request):
     return render(request, 'blog/home.html', context)
 
 
-def posts(request):
-    """
-    Handle the blog posts page view.
-    """
-    return render(request, 'blog/posts.html')
+# def posts(request):
+#     """
+#     Handle the blog posts page view.
+#     """
+#     return render(request, 'blog/posts.html')
 
 """
 view for handling user registration and login."""
@@ -105,17 +108,54 @@ def edit_profile(request):
     return render(request, 'blog/edit_profile.html', context)
 
 
-def blog_posts(ListView):
+class BlogsView (ListView):
     model = Post
     template_name = 'blog/posts.html'
     context_object_name = 'posts'
     ordering = ['-published_date']
 
 
-def get_object(request, pk):
-    post = get_object_or_404(Post, pk=pk)
-    return render(request,  {'post': post})
+class BlogDetailView(DetailView):
+    model = Post
+    template_name = 'blog/post_detail.html'
 
 
-def blog_post_create(request):
-    if request.method == "POST":
+class BlogCreateView(CreateView):
+    model = Post
+    template_name = 'blog/post_form.html'
+    fields = ['title', 'content']
+    success_url = reverse_lazy('posts')
+
+
+    # This method is overridden to set the author of the post to the current logged-in user before saving the form.
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+    
+
+class BlogUpdateView (LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Post
+    fields = ['title', 'body']
+    template_name = 'blog/post_form.html'
+
+# This test_func() checks if the current loggged-in user is the author of the post they are trying to update.
+    def test_func(self):
+        post = self.get_object()
+        return self.request.user == post.author
+    
+
+class BlogDeleteView (LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Post
+    template_name = 'blog/post_confirm_delete.html'
+    success_url = reverse_lazy('posts')
+
+    def test_func(self):
+        post = self.get_object()
+        return self.request.user == post.author
+    
+
+    
+
+
+
+    
