@@ -4,7 +4,7 @@ from .views import (
     register, login_view, logout_view, home, 
     edit_profile, BlogsView, BlogCreateView, 
     BlogDetailView, BlogUpdateView, BlogDeleteView, 
-    CommentUpdateView, CommentDeleteView
+    CommentUpdateView, CommentDeleteView, CommentCreateView
 )
 from django.conf import settings
 from django.conf.urls.static import static
@@ -25,6 +25,7 @@ urlpatterns = [
     path('profile/', edit_profile, name='edit_profile'),
     path('comment/<int:pk>/update/', CommentUpdateView.as_view(), name='comment-update'),
     path('comment/<int:pk>/delete/', CommentDeleteView.as_view(), name='comment-delete'),
+    path("post/<int:pk>/comments/new/", CommentCreateView.as_view(), name="add-comment"),
 
 
 ]
