@@ -1,7 +1,7 @@
 from django.contrib.auth.forms import  UserCreationForm
 from django import forms
 from django.contrib.auth.models import User
-from .models import Profile
+from .models import Profile, Comment
 
 
 
@@ -48,7 +48,6 @@ class LoginForm(forms.Form):
         return cleaned_data
 
 
-
 class UserUpdateForm(forms.ModelForm):
     email = forms.EmailField()
 
@@ -60,3 +59,21 @@ class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['profile_picture']
+
+
+class CommentForm(forms.ModelForm):
+    """
+    A form for creating and updating comments on a blog post.
+    The form handles validation automatically for the content field.
+
+    """
+    class Meta:
+        model = Comment
+        fields = ['content']
+        widgets = {
+            'content': forms.Textarea(attrs={
+                'class': 'form-control', 
+                'placeholder' : 'Write your comment here ....',
+                'rows': 4
+            })
+        }

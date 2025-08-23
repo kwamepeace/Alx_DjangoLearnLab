@@ -1,8 +1,10 @@
 from django.urls import path
 from django.contrib import admin
 from .views import (
-    register, login_view, logout_view, home, edit_profile, BlogsView, BlogCreateView, 
-    BlogDetailView, BlogUpdateView, BlogDeleteView
+    register, login_view, logout_view, home, 
+    edit_profile, BlogsView, BlogCreateView, 
+    BlogDetailView, BlogUpdateView, BlogDeleteView, 
+    CommentUpdateView, CommentDeleteView
 )
 from django.conf import settings
 from django.conf.urls.static import static
@@ -21,6 +23,9 @@ urlpatterns = [
     path('login/', login_view, name='login'),
     path('logout/', logout_view, name='logout'),
     path('profile/', edit_profile, name='edit_profile'),
+    path('comment/<int:pk>/update/', CommentUpdateView.as_view(), name='comment-update'),
+    path('comment/<int:pk>/delete/', CommentDeleteView.as_view(), name='comment-delete'),
+
 
 ]
 

@@ -2,13 +2,15 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
-from .forms import LoginForm, CustomUserCreationForm, UserUpdateForm, ProfileUpdateForm
-from .models import Post
+from .forms import LoginForm, CustomUserCreationForm, UserUpdateForm, ProfileUpdateForm, CommentForm
+from django.views.generic.edit import FormMixin
+from .models import Post, Comment
 from django.views.generic import (
     ListView, DetailView, CreateView, UpdateView, DeleteView
 ) 
+
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.urls import reverse_lazy
+from django.urls import reverse,reverse_lazy
 
 
 
@@ -20,12 +22,6 @@ def home(request):
     }
     return render(request, 'blog/home.html', context)
 
-
-# def posts(request):
-#     """
-#     Handle the blog posts page view.
-#     """
-#     return render(request, 'blog/posts.html')
 
 """
 view for handling user registration and login."""
@@ -115,11 +111,6 @@ class BlogsView (ListView):
     ordering = ['-published_date']
 
 
-class BlogDetailView(DetailView):
-    model = Post
-    template_name = 'blog/post_detail.html'
-
-
 class BlogCreateView(CreateView):
     model = Post
     template_name = 'blog/post_form.html'
@@ -135,7 +126,7 @@ class BlogCreateView(CreateView):
 
 class BlogUpdateView (LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
-    fields = ['title', 'body']
+    fields = ['title', 'content']
     template_name = 'blog/post_form.html'
 
 # This test_func() checks if the current loggged-in user is the author of the post they are trying to update.
@@ -154,7 +145,74 @@ class BlogDeleteView (LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return self.request.user == post.author
     
 
-    
+"""
+Views for handling comments on blog posts.
+
+"""
+
+class BlogDetailView(FormMixin, DetailView):
+    model = Post
+    template_name = 'blog/post_detail.html'
+    context_object_name = 'post'
+    form_class = CommentForm
+
+    # Dynamically generate the success URL to redirect to the same post detail page after a comment is added
+    def get_success_url(self):
+        return reverse('post-detail', kwargs={'pk': self.get_object().pk})
+
+
+    # Passing additional context data to the template
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Add the comment form and all comments for this post to the context
+        context['form'] = self.get_form()
+        context['comments'] = self.get_object().comments.all().order_by('-created_date')
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        # Attach the current user and the post to the comment instance before saving
+        comment = form.save(commit=False)
+        comment.author = self.request.user
+        comment.post = self.object
+        comment.save()
+        return super().form_valid(form)
+
+class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Comment
+    template_name = 'blog/comment_update_form.html'
+    form_class = CommentForm
+    context_object_name = 'comment'
+
+    def get_success_url(self):
+        # Redirect back to the post detail page after updating
+        return reverse('post-detail', kwargs={'pk': self.object.post.pk})
+
+    def test_func(self):
+        # Ensure only the author of the comment can update it
+        comment = self.get_object()
+        return self.request.user == comment.author
+
+class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Comment
+    template_name = 'blog/comment_confirm_delete.html'
+    context_object_name = 'comment'
+
+    def get_success_url(self):
+        # Redirect back to the post detail page after deleting
+        return reverse('post-detail', kwargs={'pk': self.object.post.pk})
+
+    def test_func(self):
+        # Ensure only the author of the comment can delete it
+        comment = self.get_object()
+        return self.request.user == comment.author
 
 
 
