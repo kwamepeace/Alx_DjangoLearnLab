@@ -111,3 +111,7 @@ class CommentForm(forms.ModelForm):
                 'rows': 4
             })
         }
+
+
+
+TagWidget()
