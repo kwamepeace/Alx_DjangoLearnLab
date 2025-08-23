@@ -27,6 +27,7 @@ urlpatterns = [
     path('comment/<int:pk>/delete/', CommentDeleteView.as_view(), name='comment-delete'),
     path('tags/<slug:tag_slug>/', post_list_by_tag, name='posts_by_tag'),
     path('search/', search_results, name='search_results'),
+    path('', PostByTagListView.as_view(), name='posts_by_tag'),
 ]
 
 # Serve media files during development
