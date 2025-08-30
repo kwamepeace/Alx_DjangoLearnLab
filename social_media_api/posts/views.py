@@ -26,7 +26,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     """
     serializer_class = CommentSerializer
     permission_classes = [permissions.IsAuthenticated]
-
+    queryset = Comment.objects.all()
     def get_queryset(self):
         """
         Filters the queryset to show only comments for a specific post.
