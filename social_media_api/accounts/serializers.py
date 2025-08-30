@@ -20,7 +20,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         # This method is called by the view's create() method.
         # It creates a new user with a correctly hashed password.
-        user = get_user_model.objects.create_user(
+        user = get_user_model().objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
             password=validated_data['password'],
