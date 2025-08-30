@@ -11,7 +11,6 @@ class User(AbstractUser):
     profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
     # The 'followers' field is a ManyToMany relationship to the User model itself.
     # symmetrical=False is crucial here because following is not a two-way relationship
-    # (if A follows B, B does not necessarily follow A).
     followers = models.ManyToManyField('self', symmetrical=False, blank=True)
 
     def __str__(self):
